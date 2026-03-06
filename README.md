@@ -1,4 +1,4 @@
-# IEEE 1588 PTP Slave Clock Synchronization IP
+# MACNICA - IEEE 1588 PTP Slave Clock Synchronization IP
 
 <p align="center">
   <img src="docs/images/banner.svg" alt="PTP Slave Sync IP" width="100%"/>
