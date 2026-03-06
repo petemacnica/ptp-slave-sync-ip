@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IEEE 1588 PTP Slave Sync IP — Microarchitecture Design</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap');
+
+  :root {
+    --bg:       #09090f;
+    --bg2:      #0e0e1a;
+    --bg3:      #141425;
+    --border:   #1e1e3a;
+    --accent1:  #00e5ff;
+    --accent2:  #7c3aed;
+    --accent3:  #22c55e;
+    --accent4:  #f59e0b;
+    --accent5:  #ef4444;
+    --text:     #e2e8f0;
+    --textdim:  #64748b;
+    --mono:     'Share Tech Mono', monospace;
+    --head:     'Barlow Condensed', sans-serif;
+    --body:     'Barlow', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-weight: 300;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── Hero ────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(124,58,237,.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 20%, rgba(0,229,255,.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent1);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--head);
+    font-weight: 900;
+    font-size: clamp(32px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -1px;
+  }
+  .hero h1 span { color: var(--accent1); }
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 15px;
+    color: var(--textdim);
+    max-width: 700px;
+  }
+  .badges {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 28px;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    border: 1px solid;
+  }
+  .badge-cyan  { color: var(--accent1); border-color: var(--accent1); background: rgba(0,229,255,.07); }
+  .badge-purple{ color: var(--accent2); border-color: var(--accent2); background: rgba(124,58,237,.07); }
+  .badge-green { color: var(--accent3); border-color: var(--accent3); background: rgba(34,197,94,.07); }
+  .badge-amber { color: var(--accent4); border-color: var(--accent4); background: rgba(245,158,11,.07); }
+
+  /* ── Layout ──────────────────────────────────────────── */
+  .page { max-width: 1200px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── Section ─────────────────────────────────────────── */
+  .section {
+    margin-top: 72px;
+    scroll-margin-top: 80px;
+  }
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: clamp(22px, 3vw, 36px);
+    letter-spacing: -.5px;
+    border-left: 3px solid var(--accent1);
+    padding-left: 16px;
+  }
+  .section h3 {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--accent1);
+    margin: 32px 0 12px;
+  }
+  .section p { margin: 12px 0; font-size: 14px; color: var(--text); }
+  .dim { color: var(--textdim); font-size: 13px; }
+
+  /* ── Block equation ─────────────────────────────────── */
+  .equation {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent4);
+    padding: 14px 20px;
+    border-radius: 4px;
+    margin: 16px 0;
+    color: var(--accent4);
+    white-space: pre;
+  }
+
+  /* ── Architecture diagram (SVG-powered) ─────────────── */
+  .arch-canvas {
+    width: 100%;
+    overflow-x: auto;
+    margin: 24px 0;
+  }
+  .arch-canvas svg { min-width: 820px; }
+
+  /* ── Module cards ────────────────────────────────────── */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .mcard {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    transition: border-color .2s, box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .mcard::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .mcard-cyan::after   { background: var(--accent1); }
+  .mcard-purple::after { background: var(--accent2); }
+  .mcard-green::after  { background: var(--accent3); }
+  .mcard-amber::after  { background: var(--accent4); }
+  .mcard-red::after    { background: var(--accent5); }
+  .mcard:hover { border-color: #2e2e5a; box-shadow: 0 4px 30px rgba(0,229,255,.05); }
+  .mcard-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent1);
+    margin-bottom: 8px;
+  }
+  .mcard h4 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+  .mcard p { font-size: 13px; color: var(--textdim); }
+  .mcard ul { margin: 8px 0 0 16px; font-size: 12px; color: var(--textdim); }
+  .mcard li { margin: 3px 0; }
+
+  /* ── Signal table ────────────────────────────────────── */
+  .sig-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 20px;
+  }
+  .sig-table th {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--textdim);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .sig-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(30,30,58,.7);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    vertical-align: top;
+  }
+  .sig-table tr:hover td { background: rgba(255,255,255,.02); }
+  .sig-dir-in  { color: var(--accent1); }
+  .sig-dir-out { color: var(--accent3); }
+  .sig-type    { color: var(--accent4); }
+  .sig-desc    { font-family: var(--body); font-size: 12px; color: var(--textdim); }
+
+  /* ── Timeline diagram ────────────────────────────────── */
+  .timeline-wrap { overflow-x: auto; margin: 24px 0; }
+
+  /* ── Code snippet ────────────────────────────────────── */
+  .code-block {
+    background: #07070f;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 16px 0;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .kw { color: #7c3aed; }
+  .ty { color: #00e5ff; }
+  .cm { color: #374151; }
+  .nm { color: #22c55e; }
+  .num{ color: #f59e0b; }
+  .str{ color: #f87171; }
+
+  /* ── State machine diagram ───────────────────────────── */
+  .fsm-wrap { overflow-x: auto; margin: 20px 0; }
+
+  /* ── Profile table ───────────────────────────────────── */
+  .profile-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  .profile-table th {
+    background: var(--bg3);
+    font-family: var(--head);
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    padding: 10px 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .profile-table td {
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .profile-table tr:nth-child(even) td { background: var(--bg2); }
+
+  /* ── Nav ─────────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(9,9,15,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent1);
+    letter-spacing: 2px;
+    padding: 14px 0;
+    margin-right: 32px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  nav a {
+    font-family: var(--head);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--textdim);
+    text-decoration: none;
+    padding: 14px 14px;
+    white-space: nowrap;
+    transition: color .2s;
+    border-bottom: 2px solid transparent;
+  }
+  nav a:hover { color: var(--text); }
+  nav a.active { color: var(--accent1); border-bottom-color: var(--accent1); }
+
+  /* ── Callout ─────────────────────────────────────────── */
+  .callout {
+    background: var(--bg2);
+    border-left: 3px solid var(--accent2);
+    padding: 14px 18px;
+    border-radius: 0 4px 4px 0;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .callout-amber { border-left-color: var(--accent4); }
+  .callout-green { border-left-color: var(--accent3); }
+  .callout strong { color: var(--text); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  @media(max-width:700px){ .two-col{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">PTP-SYNC-IP / v1.0</div>
+  <a href="#overview" class="active">Overview</a>
+  <a href="#arch">Architecture</a>
+  <a href="#modules">Modules</a>
+  <a href="#timestamps">Timestamps</a>
+  <a href="#servo">Servo</a>
+  <a href="#bmca">BMCA</a>
+  <a href="#security">Security</a>
+  <a href="#ports">Port I/O</a>
+  <a href="#profile">PTP Profile</a>
+  <a href="#verification">Verification</a>
+</nav>
+
+<div class="hero">
+  <div class="page" style="padding-top:0; padding-bottom:0;">
+    <div class="hero-label">RTL Microarchitecture Design Document · Rev 1.0</div>
+    <h1>IEEE 1588 PTP<br/><span>Slave Clock Sync IP</span></h1>
+    <div class="hero-sub">
+      Hardware synchronization logic for ProAV encoder/decoder endpoints
+      over Ethernet II networks — implementing the full IEEE 1588-2008
+      Two-Step Boundary/Ordinary Clock protocol with hardware timestamping,
+      BMCA arbitration, PI servo control, and SMPTE ST 2059-2 profile defaults.
+    </div>
+    <div class="badges">
+      <span class="badge badge-cyan">IEEE 1588-2008</span>
+      <span class="badge badge-cyan">SMPTE ST 2059-2</span>
+      <span class="badge badge-purple">SystemVerilog RTL</span>
+      <span class="badge badge-purple">125 MHz / 8 ns</span>
+      <span class="badge badge-green">Sub-100 ns accuracy</span>
+      <span class="badge badge-green">Hardware Timestamping</span>
+      <span class="badge badge-amber">Boundary Clock</span>
+      <span class="badge badge-amber">PI Servo</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════ OVERVIEW -->
+<div class="section" id="overview">
+  <div class="section-tag">Section 01</div>
+  <h2>Design Overview</h2>
+  <p>
+    This IP core implements a fully self-contained IEEE 1588 PTP Slave / Ordinary Clock
+    synchronization engine for deployment in ProAV encoder or decoder SoCs connected
+    to an Ethernet II network managed by a Mellanox Onyx Boundary Clock infrastructure.
+    It operates as the <strong>slave endpoint</strong> of the Master–Slave timing hierarchy,
+    recovering the Grandmaster clock with sub-100 nanosecond accuracy using hardware
+    timestamping at the PHY layer.
+  </p>
+
+  <div class="two-col">
+    <div>
+      <h3>Why Hardware PTP?</h3>
+      <p>Software NTP provides only millisecond-range accuracy. IEEE 1588 PTP with
+      hardware timestamping at the PHY/MAC boundary removes all OS-induced jitter from
+      the timestamp path, enabling sub-microsecond, and with Boundary Clocks,
+      sub-100 nanosecond accuracy across the LAN.</p>
+      <div class="callout callout-green">
+        <strong>ProAV requirement:</strong> SMPTE ST 2059-2 mandates PTP-disciplined
+        clocking for video/audio frame alignment. The GM hierarchy distributes
+        a common reference derived from GPS/GNSS at domain 127.
+      </div>
+    </div>
+    <div>
+      <h3>Design Targets</h3>
+      <div class="callout callout-amber">
+        <strong>Clock:</strong> 125 MHz system clock (8 ns resolution)<br/>
+        <strong>Accuracy goal:</strong> &lt; 100 ns offset-from-master<br/>
+        <strong>PTP Domain:</strong> 127 (SMPTE ST 2059-2)<br/>
+        <strong>Profile:</strong> SMPTE ST 2059-2 / AES67 compatible<br/>
+        <strong>Transport:</strong> Ethernet II (EtherType 0x88F7)<br/>
+        <strong>Mode:</strong> Two-step slave-only
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ ARCH -->
+<div class="section" id="arch">
+  <div class="section-tag">Section 02</div>
+  <h2>Block Architecture</h2>
+  <p>
+    The IP is partitioned into three cooperating RTL submodules, all synchronous to
+    a single 125 MHz clock domain. The wrapper (<code>ptp_sync_wrapper</code>) provides
+    the single instantiation boundary for integration into the encoder/decoder SoC.
+  </p>
+
+  <div class="arch-canvas">
+    <svg viewBox="0 0 900 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#00e5ff" opacity=".7"/>
+        </marker>
+        <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#22c55e" opacity=".7"/>
+        </marker>
+        <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#f59e0b" opacity=".7"/>
+        </marker>
+        <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Background grid -->
+      <rect width="900" height="500" fill="#09090f" rx="8"/>
+      <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e1e3a" stroke-width=".5"/>
+      </pattern>
+      <rect width="900" height="500" fill="url(#g)" opacity=".5"/>
+
+      <!-- ── Ethernet MAC / PHY column ───────────── -->
+      <rect x="20" y="50" width="130" height="380" rx="6" fill="#0e0e1a" stroke="#1e1e3a"/>
+      <text x="85" y="38" font-family="Share Tech Mono" font-size="10" fill="#64748b" text-anchor="middle" letter-spacing="1">ETHERNET</text>
+      <text x="85" y="50" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">MAC / PHY</text>
+
+      <!-- PHY box -->
+      <rect x="30" y="60" width="110" height="80" rx="4" fill="#141425" stroke="#2e2e5a"/>
+      <text x="85" y="97" font-family="Barlow Condensed" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="middle">PHY</text>
+      <text x="85" y="112" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">HW Timestamp</text>
+      <text x="85" y="124" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Unit (SFD)</text>
+
+      <!-- MAC RX -->
+      <rect x="30" y="160" width="110" height="60" rx="4" fill="#141425" stroke="#2e2e5a"/>
+      <text x="85" y="195" font-family="Barlow Condensed" font-size="13" font-weight="600" fill="#94a3b8" text-anchor="middle">MAC RX</text>
+      <text x="85" y="210" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">AXI4-S (8b)</text>
+
+      <!-- MAC TX -->
+      <rect x="30" y="330" width="110" height="60" rx="4" fill="#141425" stroke="#2e2e5a"/>
+      <text x="85" y="365" font-family="Barlow Condensed" font-size="13" font-weight="600" fill="#94a3b8" text-anchor="middle">MAC TX</text>
+      <text x="85" y="380" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">AXI4-S (8b)</text>
+
+      <!-- ── ptp_msg_parser ───────────────────────── -->
+      <rect x="200" y="120" width="160" height="120" rx="6" fill="#0e0e1a" stroke="#00e5ff" stroke-width="1.5"/>
+      <rect x="200" y="120" width="160" height="4" rx="6" fill="#00e5ff"/>
+      <text x="280" y="148" font-family="Share Tech Mono" font-size="9" fill="#00e5ff" text-anchor="middle" letter-spacing="1">MODULE</text>
+      <text x="280" y="163" font-family="Barlow Condensed" font-size="16" font-weight="700" fill="#e2e8f0" text-anchor="middle">ptp_msg_parser</text>
+      <text x="280" y="180" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Frame decode</text>
+      <text x="280" y="193" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">HW TS capture (T2)</text>
+      <text x="280" y="206" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Announce extract</text>
+      <text x="280" y="219" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Follow-Up extract</text>
+      <text x="280" y="232" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Delay-Resp parse</text>
+
+      <!-- ── ptp_slave_sync_top ─────────────────── -->
+      <rect x="430" y="60" width="240" height="360" rx="6" fill="#0e0e1a" stroke="#7c3aed" stroke-width="1.5"/>
+      <rect x="430" y="60" width="240" height="4" rx="6" fill="#7c3aed"/>
+      <text x="550" y="86" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle" letter-spacing="1">CORE MODULE</text>
+      <text x="550" y="103" font-family="Barlow Condensed" font-size="16" font-weight="700" fill="#e2e8f0" text-anchor="middle">ptp_slave_sync_top</text>
+
+      <!-- Sub-blocks inside sync top -->
+      <rect x="442" y="115" width="100" height="44" rx="3" fill="#141425" stroke="#2e2e5a"/>
+      <text x="492" y="135" font-family="Share Tech Mono" font-size="8" fill="#22c55e" text-anchor="middle">HW CLOCK</text>
+      <text x="492" y="148" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">125 MHz PTP</text>
+
+      <rect x="556" y="115" width="102" height="44" rx="3" fill="#141425" stroke="#2e2e5a"/>
+      <text x="607" y="135" font-family="Share Tech Mono" font-size="8" fill="#22c55e" text-anchor="middle">SERVO CLOCK</text>
+      <text x="607" y="148" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">PI corrected</text>
+
+      <rect x="442" y="175" width="216" height="44" rx="3" fill="#141425" stroke="#2e2e5a"/>
+      <text x="550" y="195" font-family="Share Tech Mono" font-size="8" fill="#f59e0b" text-anchor="middle">BMCA ENGINE</text>
+      <text x="550" y="208" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">Priority1/ClockClass/Acc/Var/Prio2/SrcID</text>
+
+      <rect x="442" y="235" width="216" height="44" rx="3" fill="#141425" stroke="#2e2e5a"/>
+      <text x="550" y="253" font-family="Share Tech Mono" font-size="8" fill="#f59e0b" text-anchor="middle">PORT STATE FSM</text>
+      <text x="550" y="266" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">INIT→LISTEN→UNCALIB→SLAVE</text>
+
+      <rect x="442" y="295" width="216" height="44" rx="3" fill="#141425" stroke="#2e2e5a"/>
+      <text x="550" y="313" font-family="Share Tech Mono" font-size="8" fill="#00e5ff" text-anchor="middle">TIMESTAMP ENGINE</text>
+      <text x="550" y="326" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">T1/T2/T3/T4 · OFM · MPD</text>
+
+      <rect x="442" y="355" width="216" height="44" rx="3" fill="#141425" stroke="#2e2e5a"/>
+      <text x="550" y="373" font-family="Share Tech Mono" font-size="8" fill="#00e5ff" text-anchor="middle">PI SERVO</text>
+      <text x="550" y="386" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">Kp=2⁻⁴ · Ki=2⁻⁸ · anti-windup</text>
+
+      <!-- ── ptp_delay_req_framer ─────────────────── -->
+      <rect x="200" y="310" width="160" height="110" rx="6" fill="#0e0e1a" stroke="#22c55e" stroke-width="1.5"/>
+      <rect x="200" y="310" width="160" height="4" rx="6" fill="#22c55e"/>
+      <text x="280" y="336" font-family="Share Tech Mono" font-size="9" fill="#22c55e" text-anchor="middle" letter-spacing="1">MODULE</text>
+      <text x="280" y="351" font-family="Barlow Condensed" font-size="13" font-weight="700" fill="#e2e8f0" text-anchor="middle">ptp_delay_req_framer</text>
+      <text x="280" y="368" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Build Delay_Req frame</text>
+      <text x="280" y="381" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">TX AXI4-S byte stream</text>
+      <text x="280" y="394" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">T3 HW TS feedback</text>
+
+      <!-- ── Config Registers ────────────────────── -->
+      <rect x="720" y="200" width="150" height="130" rx="6" fill="#0e0e1a" stroke="#f59e0b" stroke-width="1"/>
+      <text x="795" y="224" font-family="Barlow Condensed" font-size="13" font-weight="700" fill="#f59e0b" text-anchor="middle">Config Regs</text>
+      <text x="795" y="240" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">cfg_domain_num</text>
+      <text x="795" y="253" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">cfg_slave_only</text>
+      <text x="795" y="266" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">cfg_forced_master</text>
+      <text x="795" y="279" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">cfg_amt_table[8]</text>
+      <text x="795" y="292" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">OFM / MPD thresholds</text>
+
+      <!-- ── Output block ────────────────────────── -->
+      <rect x="720" y="60" width="150" height="120" rx="6" fill="#0e0e1a" stroke="#22c55e" stroke-width="1"/>
+      <text x="795" y="84" font-family="Barlow Condensed" font-size="13" font-weight="700" fill="#22c55e" text-anchor="middle">Clock Outputs</text>
+      <text x="795" y="100" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">local_time_sec[47:0]</text>
+      <text x="795" y="113" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">local_time_ns[31:0]</text>
+      <text x="795" y="126" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">pps_out</text>
+      <text x="795" y="139" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">clock_locked</text>
+      <text x="795" y="152" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">offset_from_master</text>
+      <text x="795" y="165" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">mean_path_delay</text>
+
+      <!-- ── Arrows ──────────────────────────────── -->
+      <!-- MAC RX → parser -->
+      <path d="M 140 190 L 196 190" stroke="#00e5ff" stroke-width="1.5" opacity=".7" marker-end="url(#arrow)"/>
+      <text x="165" y="184" font-family="Share Tech Mono" font-size="8" fill="#00e5ff" text-anchor="middle">rx_tdata</text>
+
+      <!-- PHY TS → parser -->
+      <path d="M 140 100 L 172 100 L 172 160 L 196 160" stroke="#00e5ff" stroke-width="1" stroke-dasharray="4,3" opacity=".5" marker-end="url(#arrow)"/>
+      <text x="168" y="132" font-family="Share Tech Mono" font-size="7.5" fill="#64748b">phy_rx_ts</text>
+
+      <!-- parser → sync top -->
+      <path d="M 360 180 L 426 180" stroke="#00e5ff" stroke-width="1.5" opacity=".7" marker-end="url(#arrow)"/>
+      <text x="391" y="173" font-family="Share Tech Mono" font-size="8" fill="#00e5ff" text-anchor="middle">ptp fields</text>
+
+      <!-- sync top → framer (dreq trigger) -->
+      <path d="M 550 420 L 550 450 L 280 450 L 280 424" stroke="#22c55e" stroke-width="1.5" opacity=".7" marker-end="url(#arrow-green)"/>
+      <text x="415" y="445" font-family="Share Tech Mono" font-size="8" fill="#22c55e" text-anchor="middle">dreq_valid / seq_id</text>
+
+      <!-- framer → MAC TX -->
+      <path d="M 200 370 L 144 370" stroke="#22c55e" stroke-width="1.5" opacity=".7" marker-end="url(#arrow-green)"/>
+      <text x="168" y="362" font-family="Share Tech Mono" font-size="8" fill="#22c55e" text-anchor="middle">tx_tdata</text>
+
+      <!-- PHY TX TS → framer -->
+      <path d="M 140 110 L 160 110 L 160 390 L 196 390" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity=".4" marker-end="url(#arrow-green)"/>
+      <text x="158" y="340" font-family="Share Tech Mono" font-size="7.5" fill="#64748b">phy_tx_ts</text>
+
+      <!-- framer → sync top (dreq_ack, T3) -->
+      <path d="M 360 330 L 396 330 L 396 430 L 550 430" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity=".5" marker-end="url(#arrow-green)"/>
+      <text x="385" y="320" font-family="Share Tech Mono" font-size="7.5" fill="#64748b">dreq_ack/T3</text>
+
+      <!-- sync top → outputs -->
+      <path d="M 670 120 L 716 120" stroke="#22c55e" stroke-width="1.5" opacity=".7" marker-end="url(#arrow-green)"/>
+
+      <!-- config → sync top -->
+      <path d="M 716 265 L 674 265" stroke="#f59e0b" stroke-width="1.5" opacity=".7" marker-end="url(#arrow-amber)"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ MODULES -->
+<div class="section" id="modules">
+  <div class="section-tag">Section 03</div>
+  <h2>Module Descriptions</h2>
+
+  <div class="module-grid">
+    <div class="mcard mcard-cyan">
+      <div class="mcard-name">ptp_sync_wrapper.sv</div>
+      <h4>Integration Wrapper</h4>
+      <p>Top-level integration boundary. Connects parser, sync core, and framer. Single module to instantiate in encoder/decoder SoC.</p>
+      <ul>
+        <li>Wires AXI4-Stream RX/TX between MAC and submodules</li>
+        <li>Routes PHY hardware timestamps to appropriate sinks</li>
+        <li>Exposes all config and status to register file</li>
+      </ul>
+    </div>
+
+    <div class="mcard mcard-purple">
+      <div class="mcard-name">ptp_slave_sync_top.sv</div>
+      <h4>Sync Core</h4>
+      <p>Central processing engine. Contains all PTP protocol logic, timestamp math, port FSM, BMCA, servo, and corrected clock.</p>
+      <ul>
+        <li>Free-running 80-bit PTP hardware clock (48b sec + 32b ns)</li>
+        <li>Servo-adjusted corrected clock output</li>
+        <li>T1/T2/T3/T4 capture and OFM/MPD computation</li>
+        <li>BMCA with full 6-field comparison</li>
+        <li>9-state port FSM per IEEE 1588-2008</li>
+        <li>PI servo with anti-windup (±10 ms clamp)</li>
+        <li>AMT / forced-master security checks</li>
+      </ul>
+    </div>
+
+    <div class="mcard mcard-cyan">
+      <div class="mcard-name">ptp_msg_parser.sv</div>
+      <h4>Frame Parser</h4>
+      <p>Byte-stream PTP frame decoder driven by AXI4-Stream from MAC RX. Extracts all IEEE 1588 header and body fields.</p>
+      <ul>
+        <li>PTP over Ethernet_II (0x88F7) and IPv4/UDP</li>
+        <li>Hardware RX timestamp latch on SFD (tuser pulse)</li>
+        <li>Decode: Sync, Follow_Up, Delay_Resp, Announce</li>
+        <li>44-byte header+body buffer with field extraction</li>
+      </ul>
+    </div>
+
+    <div class="mcard mcard-green">
+      <div class="mcard-name">ptp_delay_req_framer.sv</div>
+      <h4>Delay_Req TX Framer</h4>
+      <p>Builds and transmits Ethernet II Delay_Request PTP frames. Captures PHY TX hardware timestamp (T3) after SFD transmission.</p>
+      <ul>
+        <li>58-byte frame with SMPTE ST 2059-2 defaults</li>
+        <li>PTP multicast DA (01:1B:19:00:00:00)</li>
+        <li>3-state FSM: IDLE → SEND → WAIT_TS</li>
+        <li>T3 precision from PHY HW timestamp feedback</li>
+      </ul>
+    </div>
+
+    <div class="mcard mcard-amber">
+      <div class="mcard-name">tb_ptp_sync_wrapper.sv</div>
+      <h4>Verification Testbench</h4>
+      <p>Directed simulation testbench with automated pass/fail checks for all major protocol scenarios.</p>
+      <ul>
+        <li>Reset / INIT → LISTENING check</li>
+        <li>BMCA dataset update via injected Announce</li>
+        <li>AMT violation detection</li>
+        <li>Forced-master Announce discard</li>
+        <li>Sync + Follow_Up T1/T2 capture</li>
+        <li>Delay_Req TX trigger, T3/T4 injection</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TIMESTAMPS -->
+<div class="section" id="timestamps">
+  <div class="section-tag">Section 04</div>
+  <h2>Timestamp Engine &amp; Two-Step Mechanism</h2>
+  <p>
+    The timestamp engine implements the two-step synchronization exchange defined in
+    Section 2 of the IEEE 1588 guide. Four hardware timestamps are captured per
+    synchronization cycle and used to compute offset and delay.
+  </p>
+
+  <div class="timeline-wrap">
+    <svg viewBox="0 0 780 220" xmlns="http://www.w3.org/2000/svg">
+      <rect width="780" height="220" fill="#09090f" rx="6"/>
+      <!-- Timeline lines -->
+      <line x1="100" y1="40" x2="100" y2="195" stroke="#7c3aed" stroke-width="2"/>
+      <line x1="660" y1="40" x2="660" y2="195" stroke="#00e5ff" stroke-width="2"/>
+
+      <text x="100" y="30" font-family="Barlow Condensed" font-size="14" font-weight="700" fill="#7c3aed" text-anchor="middle">MASTER (GM)</text>
+      <text x="660" y="30" font-family="Barlow Condensed" font-size="14" font-weight="700" fill="#00e5ff" text-anchor="middle">SLAVE (this IP)</text>
+
+      <!-- Sync arrow -->
+      <line x1="100" y1="65" x2="660" y2="95" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-amber)" opacity=".9"/>
+      <text x="100" y="58" font-family="Share Tech Mono" font-size="9" fill="#f59e0b">T1 ●</text>
+      <text x="660" y="108" font-family="Share Tech Mono" font-size="9" fill="#f59e0b" text-anchor="end">● T2</text>
+      <text x="375" y="72" font-family="Share Tech Mono" font-size="10" fill="#f59e0b" text-anchor="middle">Sync_message</text>
+
+      <!-- Follow_Up arrow -->
+      <line x1="100" y1="115" x2="660" y2="115" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)" opacity=".6"/>
+      <text x="375" y="108" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Follow_Up (carries T1)</text>
+
+      <!-- Delay_Req arrow -->
+      <line x1="660" y1="145" x2="100" y2="175" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrow-green)" opacity=".9"/>
+      <text x="660" y="138" font-family="Share Tech Mono" font-size="9" fill="#22c55e" text-anchor="end">T3 ●</text>
+      <text x="100" y="188" font-family="Share Tech Mono" font-size="9" fill="#22c55e">● T4</text>
+      <text x="375" y="185" font-family="Share Tech Mono" font-size="10" fill="#22c55e" text-anchor="middle">Delay_Request</text>
+
+      <!-- Delay_Resp arrow -->
+      <line x1="100" y1="200" x2="660" y2="200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)" opacity=".4"/>
+      <text x="375" y="213" font-family="Share Tech Mono" font-size="9" fill="#64748b" text-anchor="middle">Delay_Response (carries T4)</text>
+    </svg>
+  </div>
+
+  <div class="equation">
+  T2 − T1  =  Transmission_Delay  +  Clock_Offset         (Forward path)
+  T4 − T3  =  Transmission_Delay  −  Clock_Offset         (Return path)
+
+  Clock_Offset  =  [ (T2 − T1) − (T4 − T3) ] / 2
+  Mean_Path_Dly =  [ (T2 − T1) + (T4 − T3) ] / 2
+  </div>
+
+  <div class="callout">
+    <strong>Hardware timestamping:</strong> T2 is captured at the SFD boundary in the
+    PHY timestamping unit (driven via <code>rx_tuser</code> strobe). T3 is the PHY TX
+    hardware timestamp fed back after the Delay_Req SFD is transmitted
+    (<code>phy_tx_ts_valid</code> strobe). This eliminates all software/OS-induced
+    jitter from the measurement path.
+  </div>
+
+  <h3>Timestamp Format</h3>
+  <p>All timestamps are 80-bit IEEE 1588 format: <code>[79:32]</code> = seconds (48-bit),
+  <code>[31:0]</code> = nanoseconds (32-bit). The measurement engine converts these to
+  a single 64-bit nanosecond value for arithmetic.</p>
+
+  <div class="code-block">
+<span class="cm">// 80-bit PTP timestamp → 64-bit nanoseconds</span>
+<span class="kw">function automatic</span> <span class="ty">logic signed</span> [<span class="num">63</span>:<span class="num">0</span>] ts_to_ns (
+    <span class="kw">input</span> <span class="ty">logic</span> [<span class="num">79</span>:<span class="num">0</span>] ts);
+  <span class="ty">logic</span> [<span class="num">47</span>:<span class="num">0</span>] secs = ts[<span class="num">79</span>:<span class="num">32</span>];
+  <span class="ty">logic</span> [<span class="num">31</span>:<span class="num">0</span>] nsec = ts[<span class="num">31</span>:<span class="num">0</span>];
+  <span class="kw">return</span> $signed({<span class="num">32'b0</span>, secs[<span class="num">31</span>:<span class="num">0</span>]}) * <span class="num">64'd1_000_000_000</span> +
+         $signed({<span class="num">32'b0</span>, nsec});
+<span class="kw">endfunction</span>
+
+<span class="cm">// Compute offset and mean path delay</span>
+offset_calc &lt;= ((t2_ns - t1_ns) - (t4_ns - t3_ns)) &gt;&gt;&gt; <span class="num">1</span>;
+mpd_calc    &lt;= ((t2_ns - t1_ns) + (t4_ns - t3_ns)) &gt;&gt;&gt; <span class="num">1</span>;
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SERVO -->
+<div class="section" id="servo">
+  <div class="section-tag">Section 05</div>
+  <h2>PI Servo Controller</h2>
+  <p>
+    The servo controller is a fixed-point PI loop that adjusts the corrected clock's
+    nanosecond register on each valid measurement. The correction is applied as an
+    additive step (phase) to the corrected clock, simultaneously disciplining both
+    phase and frequency over time via the integral term.
+  </p>
+
+  <div class="two-col">
+    <div>
+      <h3>Controller Design</h3>
+      <div class="equation">
+  P-term = OFM &gt;&gt; Kp_shift  (Kp = 2⁻⁴ = 1/16)
+  I-term = integrator &gt;&gt; Ki_shift  (Ki = 2⁻⁸ = 1/256)
+  correction = −(P + I)
+  integrator += OFM  (anti-windup: ±10 ms)
+      </div>
+      <p class="dim">
+        Gains are fixed-point power-of-2 shifts to avoid multipliers.
+        Kp=1/16 and Ki=1/256 are conservative values suitable for a low-jitter
+        ProAV LAN with 8 Hz sync rate (SMPTE ST 2059-2 default).
+      </p>
+    </div>
+    <div>
+      <h3>Lock Detection</h3>
+      <p>The <code>clock_locked</code> output is asserted when the measured
+      offset-from-master falls within ±1 µs. This is a simplified single-sample
+      criterion; production implementations should require N consecutive samples
+      below threshold.</p>
+      <div class="callout callout-green">
+        <strong>Anti-windup:</strong> Integrator is clamped to ±10,000,000 ns
+        (±10 ms) to prevent runaway during long Announce-timeout periods or
+        initial lock acquisition.
+      </div>
+    </div>
+  </div>
+
+  <h3>Clock Adjustment Path</h3>
+  <div class="code-block">
+<span class="cm">// Apply servo step correction to corrected clock register</span>
+<span class="kw">if</span> (servo_update && port_state == <span class="nm">STATE_SLAVE</span>) <span class="kw">begin</span>
+    <span class="ty">logic signed</span> [<span class="num">NS_W</span>:<span class="num">0</span>] adjusted_ns;
+    adjusted_ns = $signed({<span class="num">1'b0</span>, corr_ns}) + servo_correction;
+    <span class="kw">if</span> (adjusted_ns &lt; <span class="num">0</span>) <span class="kw">begin</span>           <span class="cm">// Borrow from seconds</span>
+        corr_ns  &lt;= <span class="nm">NS_PER_SEC</span> + adjusted_ns[NS_W-<span class="num">1</span>:<span class="num">0</span>];
+        corr_sec &lt;= corr_sec - <span class="num">1'b1</span>;
+    <span class="kw">end else if</span> (adjusted_ns &gt;= <span class="nm">NS_PER_SEC</span>) <span class="kw">begin</span>  <span class="cm">// Carry to seconds</span>
+        corr_ns  &lt;= adjusted_ns[NS_W-<span class="num">1</span>:<span class="num">0</span>] - <span class="nm">NS_PER_SEC</span>;
+        corr_sec &lt;= corr_sec + <span class="num">1'b1</span>;
+    <span class="kw">end else</span>
+        corr_ns  &lt;= adjusted_ns[NS_W-<span class="num">1</span>:<span class="num">0</span>];
+<span class="kw">end</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ BMCA -->
+<div class="section" id="bmca">
+  <div class="section-tag">Section 06</div>
+  <h2>Best Master Clock Algorithm (BMCA)</h2>
+  <p>
+    The BMCA processes incoming Announce messages (after domain, AMT, and forced-master
+    filtering) and selects the best master using a cascaded 6-field comparison per
+    IEEE 1588-2008. The slave-only configuration prevents this device from ever
+    propagating Announce messages.
+  </p>
+
+  <div class="fsm-wrap">
+    <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="760" height="180" fill="#09090f" rx="6"/>
+      <!-- BMCA comparison chain -->
+      <rect x="20" y="60" width="90" height="50" rx="4" fill="#141425" stroke="#7c3aed"/>
+      <text x="65" y="83" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle">Priority1</text>
+      <text x="65" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">0–255</text>
+      <text x="65" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">GM-level</text>
+
+      <path d="M 110 85 L 126 85" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="130" y="60" width="90" height="50" rx="4" fill="#141425" stroke="#7c3aed"/>
+      <text x="175" y="83" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle">ClockClass</text>
+      <text x="175" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">GNSS locked</text>
+      <text x="175" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">→ class 6</text>
+
+      <path d="M 220 85 L 236 85" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="240" y="60" width="90" height="50" rx="4" fill="#141425" stroke="#7c3aed"/>
+      <text x="285" y="83" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle">ClockAccuracy</text>
+      <text x="285" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">0x20=1µs</text>
+      <text x="285" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">0x21=2.5µs</text>
+
+      <path d="M 330 85 L 346 85" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="350" y="60" width="90" height="50" rx="4" fill="#141425" stroke="#7c3aed"/>
+      <text x="395" y="83" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle">ClockVariance</text>
+      <text x="395" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">OADEV jitter</text>
+      <text x="395" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">lower = better</text>
+
+      <path d="M 440 85 L 456 85" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="460" y="60" width="90" height="50" rx="4" fill="#141425" stroke="#7c3aed"/>
+      <text x="505" y="83" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle">Priority2</text>
+      <text x="505" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">GM hierarchy</text>
+      <text x="505" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">operator-set</text>
+
+      <path d="M 550 85 L 566 85" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="570" y="60" width="90" height="50" rx="4" fill="#141425" stroke="#7c3aed"/>
+      <text x="615" y="83" font-family="Share Tech Mono" font-size="9" fill="#7c3aed" text-anchor="middle">ClockId (MAC)</text>
+      <text x="615" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">EUI-64</text>
+      <text x="615" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">tiebreaker</text>
+
+      <path d="M 660 85 L 676 85" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+      <rect x="680" y="60" width="64" height="50" rx="4" fill="#141425" stroke="#22c55e"/>
+      <text x="712" y="83" font-family="Share Tech Mono" font-size="9" fill="#22c55e" text-anchor="middle">SELECT</text>
+      <text x="712" y="96" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">new GM or</text>
+      <text x="712" y="108" font-family="Share Tech Mono" font-size="8" fill="#64748b" text-anchor="middle">retain</text>
+
+      <text x="380" y="155" font-family="Share Tech Mono" font-size="10" fill="#64748b" text-anchor="middle">Lowest value wins at each stage. First distinguishing field determines winner.</text>
+      <text x="380" y="170" font-family="Share Tech Mono" font-size="10" fill="#64748b" text-anchor="middle">IEEE 1588-2008 §9.3.4 — Steps Removed tiebreaker applied for multi-hop BC paths.</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PORT FSM -->
+<div class="section" id="bmca">
+  <div class="section-tag">Section 07</div>
+  <h2>Port State Machine</h2>
+  <p>The 9-state PTP port FSM governs when the IP participates in synchronization.
+  For a slave-only ProAV device, the typical operational path is:
+  <strong>INIT → LISTENING → UNCALIBRATED → SLAVE</strong>.</p>
+
+  <div class="fsm-wrap">
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <rect width="700" height="200" fill="#09090f" rx="6"/>
+      <!-- States -->
+      <rect x="20"  y="80" width="80" height="40" rx="20" fill="#141425" stroke="#64748b"/>
+      <text x="60" y="105" font-family="Share Tech Mono" font-size="10" fill="#64748b" text-anchor="middle">INIT</text>
+
+      <rect x="130" y="80" width="95" height="40" rx="20" fill="#141425" stroke="#00e5ff"/>
+      <text x="177" y="105" font-family="Share Tech Mono" font-size="10" fill="#00e5ff" text-anchor="middle">LISTENING</text>
+
+      <rect x="255" y="80" width="105" height="40" rx="20" fill="#141425" stroke="#f59e0b"/>
+      <text x="307" y="105" font-family="Share Tech Mono" font-size="10" fill="#f59e0b" text-anchor="middle">UNCALIB</text>
+
+      <rect x="390" y="80" width="80" height="40" rx="20" fill="#0a1e14" stroke="#22c55e" stroke-width="2"/>
+      <text x="430" y="105" font-family="Share Tech Mono" font-size="10" fill="#22c55e" text-anchor="middle">SLAVE ★</text>
+
+      <rect x="500" y="80" width="80" height="40" rx="20" fill="#141425" stroke="#94a3b8"/>
+      <text x="540" y="105" font-family="Share Tech Mono" font-size="10" fill="#94a3b8" text-anchor="middle">PASSIVE</text>
+
+      <rect x="610" y="80" width="80" height="40" rx="20" fill="#141425" stroke="#ef4444"/>
+      <text x="650" y="105" font-family="Share Tech Mono" font-size="10" fill="#ef4444" text-anchor="middle">FAULTY</text>
+
+      <!-- Transitions -->
+      <path d="M 100 100 L 126 100" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <path d="M 225 100 L 251 100" stroke="#00e5ff" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="237" y="93" font-family="Share Tech Mono" font-size="8" fill="#00e5ff" text-anchor="middle">BMCA valid</text>
+
+      <path d="M 360 100 L 386 100" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="372" y="93" font-family="Share Tech Mono" font-size="8" fill="#f59e0b" text-anchor="middle">measure_valid</text>
+
+      <!-- Timeout back arrow -->
+      <path d="M 430 120 Q 430 170 307 170 Q 177 170 177 124" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)" opacity=".6"/>
+      <text x="307" y="162" font-family="Share Tech Mono" font-size="8" fill="#ef4444" text-anchor="middle">announce_timeout → LISTENING</text>
+
+      <!-- GM changed -->
+      <path d="M 390 85 Q 340 50 307 75" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)" opacity=".7"/>
+      <text x="345" y="48" font-family="Share Tech Mono" font-size="8" fill="#f59e0b" text-anchor="middle">GM changed → UNCALIB</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECURITY -->
+<div class="section" id="security">
+  <div class="section-tag">Section 08</div>
+  <h2>Security Features</h2>
+
+  <div class="two-col">
+    <div>
+      <h3>Acceptable Master Table (AMT)</h3>
+      <p>An 8-entry ClockIdentity whitelist filters incoming Announce messages.
+      Any Announce from a GM not in the table raises <code>amt_violation</code>
+      and is silently discarded, preventing rogue time sources.</p>
+      <div class="code-block">
+<span class="cm">// Onyx equivalent:</span>
+switch (config) # ptp amt &lt;Clock ID&gt;
+
+<span class="cm">// RTL config port:</span>
+cfg_amt_table[0] = <span class="num">64'hAABB_CCDD_EEFF_0001</span>;
+cfg_amt_valid[0] = <span class="num">1'b1</span>;
+      </div>
+    </div>
+    <div>
+      <h3>Forced-Master Port</h3>
+      <p>When <code>cfg_forced_master</code> is asserted, all incoming Announce
+      messages are discarded and logged via <code>forced_master_event</code>.
+      This prevents directly-connected devices from influencing the BMCA or
+      becoming an authoritative time source.</p>
+      <div class="code-block">
+<span class="cm">// Onyx equivalent:</span>
+switch (config) # interface ethernet x/y \
+  ptp enable forced-master
+
+<span class="cm">// RTL config port:</span>
+cfg_forced_master = <span class="num">1'b1</span>;
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Domain filter:</strong> Any PTP message with <code>domainNumber ≠ cfg_domain_num</code>
+    (default 127 per SMPTE ST 2059-2) is silently discarded before any further processing.
+    This prevents cross-domain interference in multi-tenant facilities.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PORT I/O -->
+<div class="section" id="ports">
+  <div class="section-tag">Section 09</div>
+  <h2>Port Interface Reference</h2>
+
+  <h3>Key Ports — ptp_sync_wrapper</h3>
+  <table class="sig-table">
+    <thead>
+      <tr><th>Signal</th><th>Dir</th><th>Width</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>clk</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">125 MHz system clock</td></tr>
+      <tr><td>rst_n</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">Active-low async reset</td></tr>
+      <tr><td>rx_tdata</td><td class="sig-dir-in">IN</td><td class="sig-type">8</td><td class="sig-desc">AXI4-Stream byte from MAC RX</td></tr>
+      <tr><td>rx_tvalid</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">AXI4-Stream valid</td></tr>
+      <tr><td>rx_tlast</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">AXI4-Stream last byte of frame</td></tr>
+      <tr><td>rx_tuser</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">SFD marker → triggers HW RX timestamp latch (T2)</td></tr>
+      <tr><td>phy_rx_timestamp</td><td class="sig-dir-in">IN</td><td class="sig-type">80</td><td class="sig-desc">PHY hardware RX timestamp {sec[47:0], ns[31:0]}</td></tr>
+      <tr><td>phy_tx_timestamp</td><td class="sig-dir-in">IN</td><td class="sig-type">80</td><td class="sig-desc">PHY hardware TX timestamp for T3 capture</td></tr>
+      <tr><td>phy_tx_ts_valid</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">Strobe: PHY TX timestamp is valid</td></tr>
+      <tr><td>tx_tdata</td><td class="sig-dir-out">OUT</td><td class="sig-type">8</td><td class="sig-desc">AXI4-Stream byte to MAC TX (Delay_Req frames)</td></tr>
+      <tr><td>tx_tvalid</td><td class="sig-dir-out">OUT</td><td class="sig-type">1</td><td class="sig-desc">AXI4-Stream TX valid</td></tr>
+      <tr><td>tx_tready</td><td class="sig-dir-in">IN</td><td class="sig-type">1</td><td class="sig-desc">MAC TX ready backpressure</td></tr>
+      <tr><td>local_time_sec</td><td class="sig-dir-out">OUT</td><td class="sig-type">48</td><td class="sig-desc">Servo-corrected seconds counter</td></tr>
+      <tr><td>local_time_ns</td><td class="sig-dir-out">OUT</td><td class="sig-type">32</td><td class="sig-desc">Servo-corrected nanoseconds counter</td></tr>
+      <tr><td>pps_out</td><td class="sig-dir-out">OUT</td><td class="sig-type">1</td><td class="sig-desc">Pulse-per-second output (1-cycle pulse)</td></tr>
+      <tr><td>clock_locked</td><td class="sig-dir-out">OUT</td><td class="sig-type">1</td><td class="sig-desc">Asserted when |OFM| &lt; 1 µs</td></tr>
+      <tr><td>offset_from_master</td><td class="sig-dir-out">OUT</td><td class="sig-type">32</td><td class="sig-desc">Signed OFM in nanoseconds</td></tr>
+      <tr><td>mean_path_delay</td><td class="sig-dir-out">OUT</td><td class="sig-type">32</td><td class="sig-desc">Mean path delay in nanoseconds</td></tr>
+      <tr><td>ptp_port_state</td><td class="sig-dir-out">OUT</td><td class="sig-type">3</td><td class="sig-desc">PTP port state (0=INIT … 7=DISABLED)</td></tr>
+      <tr><td>grandmaster_changed</td><td class="sig-dir-out">OUT</td><td class="sig-type">1</td><td class="sig-desc">1-cycle strobe when BMCA selects new GM</td></tr>
+      <tr><td>current_gm_id</td><td class="sig-dir-out">OUT</td><td class="sig-type">64</td><td class="sig-desc">Current Grandmaster ClockIdentity (EUI-64)</td></tr>
+      <tr><td>amt_violation</td><td class="sig-dir-out">OUT</td><td class="sig-type">1</td><td class="sig-desc">Announce received from non-AMT source</td></tr>
+      <tr><td>forced_master_event</td><td class="sig-dir-out">OUT</td><td class="sig-type">1</td><td class="sig-desc">Announce discarded by forced-master policy</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PROFILE -->
+<div class="section" id="profile">
+  <div class="section-tag">Section 10</div>
+  <h2>PTP Profile Defaults — SMPTE ST 2059-2</h2>
+  <p>Default parameters are aligned with the SMPTE ST 2059-2 profile as implemented
+  in Mellanox Onyx, ensuring interoperability with Spectrum Boundary Clocks in ProAV
+  network fabrics. Values also fall within the AESr16/AES67 compatibility range.</p>
+
+  <table class="profile-table">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>RTL Constant</th>
+        <th>SMPTE ST 2059-2 Default</th>
+        <th>Range</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>PTP Domain</td><td>PTP_DOMAIN_NUM = 127</td><td>127</td><td>0–127</td><td>SMPTE-reserved domain</td></tr>
+      <tr><td>Sync Interval</td><td>logSyncInt = -3</td><td>-3 (8 Hz / 125 ms)</td><td>-7 to -1</td><td>8 Sync/s per port</td></tr>
+      <tr><td>Announce Interval</td><td>logAnnInt = -2</td><td>-2 (4 Hz / 250 ms)</td><td>-3 to 1</td><td>4 Announce/s</td></tr>
+      <tr><td>Announce Timeout</td><td>ANNOUNCE_TIMEOUT = 3</td><td>3×</td><td>2–10</td><td>750 ms timeout</td></tr>
+      <tr><td>Delay_Req Interval</td><td>= logSyncInt</td><td>= logSyncInt</td><td>logSyncInt…+5</td><td>Matched to Sync rate</td></tr>
+      <tr><td>Priority 1</td><td>PRIORITY1_DEF = 128</td><td>128</td><td>0–255</td><td>Slave endpoint default</td></tr>
+      <tr><td>Priority 2</td><td>PRIORITY2_DEF = 128</td><td>128</td><td>0–255</td><td>Tie-break within Priority1</td></tr>
+      <tr><td>Transport</td><td>Ethernet_II 0x88F7</td><td>Ethernet_II or IPv4/UDP</td><td>—</td><td>Also IPv4/UDP supported</td></tr>
+      <tr><td>OFM Threshold</td><td>OFM_THR_NS = 100,000</td><td>—</td><td>User</td><td>100 µs alarm threshold</td></tr>
+      <tr><td>MPD Threshold</td><td>MPD_THR_NS = 1,000,000</td><td>—</td><td>User</td><td>1 ms alarm threshold</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ VERIFICATION -->
+<div class="section" id="verification">
+  <div class="section-tag">Section 11</div>
+  <h2>Verification Plan</h2>
+
+  <div class="module-grid">
+    <div class="mcard mcard-cyan">
+      <div class="mcard-name">TEST-01</div>
+      <h4>Reset → LISTENING</h4>
+      <p>Verify port state transitions from INIT to LISTENING within 3 cycles of reset deassertion.</p>
+    </div>
+    <div class="mcard mcard-cyan">
+      <div class="mcard-name">TEST-02</div>
+      <h4>BMCA Dataset Update</h4>
+      <p>Inject Announce frames and verify GM identity and clock quality fields captured correctly in open-AMT mode.</p>
+    </div>
+    <div class="mcard mcard-purple">
+      <div class="mcard-name">TEST-03</div>
+      <h4>AMT Violation</h4>
+      <p>Load AMT with one entry, inject Announce from non-AMT GM, verify <code>amt_violation</code> asserted.</p>
+    </div>
+    <div class="mcard mcard-purple">
+      <div class="mcard-name">TEST-04</div>
+      <h4>Forced-Master</h4>
+      <p>Assert <code>cfg_forced_master</code>, inject Announce, verify <code>forced_master_event</code> and no BMCA update.</p>
+    </div>
+    <div class="mcard mcard-amber">
+      <div class="mcard-name">TEST-05</div>
+      <h4>T1/T2 Capture</h4>
+      <p>Inject Sync + Follow_Up frame pair with matching seqId. Verify T1 from preciseOriginTimestamp and T2 from PHY HW timestamp.</p>
+    </div>
+    <div class="mcard mcard-amber">
+      <div class="mcard-name">TEST-06</div>
+      <h4>T3/T4 Exchange</h4>
+      <p>Verify Delay_Req TX triggered at correct rate, T3 captured from phy_tx_ts_valid strobe, Delay_Resp seqId matching for T4.</p>
+    </div>
+    <div class="mcard mcard-green">
+      <div class="mcard-name">TEST-07</div>
+      <h4>OFM/MPD Computation</h4>
+      <p>Inject known T1–T4 values, verify offset_from_master and mean_path_delay match analytical calculation within ±1 ns.</p>
+    </div>
+    <div class="mcard mcard-green">
+      <div class="mcard-name">TEST-08</div>
+      <h4>Servo Convergence</h4>
+      <p>Apply sustained 500 ns OFM, verify corrected clock converges within 1 µs after N servo update cycles, clock_locked asserts.</p>
+    </div>
+    <div class="mcard mcard-red">
+      <div class="mcard-name">TEST-09</div>
+      <h4>Announce Timeout</h4>
+      <p>Stop injecting Announce messages, verify announce_timer expires (3× interval), port state returns to LISTENING.</p>
+    </div>
+    <div class="mcard mcard-red">
+      <div class="mcard-name">TEST-10</div>
+      <h4>GM Failover</h4>
+      <p>Switch Announce to new GM ClockIdentity, verify grandmaster_changed strobe, new GM ID captured, port re-enters UNCALIBRATED.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-amber" style="margin-top:32px;">
+    <strong>Simulation tool:</strong> The provided testbench targets any IEEE 1800-2012
+    compliant SystemVerilog simulator (Questa, Xcelium, VCS, Icarus Verilog 11+).
+    Run: <code>iverilog -g2012 -o sim *.sv &amp;&amp; vvp sim</code>
+    or set up a Questa/VCS project including all five <code>.sv</code> files.
+  </div>
+</div>
+
+<div style="margin-top:80px; padding: 32px 0; border-top: 1px solid var(--border); text-align:center;">
+  <div style="font-family: var(--mono); font-size: 10px; color: var(--textdim); letter-spacing: 2px;">
+    IEEE 1588 PTP SLAVE SYNC IP · RTL DESIGN DOC v1.0 · PROAV ENCODER/DECODER
+  </div>
+  <div style="font-family: var(--mono); font-size: 10px; color: #2e2e5a; margin-top: 6px; letter-spacing: 1px;">
+    SMPTE ST 2059-2 · AES67 · IEEE 1588-2008 · MELLANOX ONYX COMPATIBLE
+  </div>
+</div>
+
+</div><!-- /.page -->
+
+<script>
+  // Nav active highlight on scroll
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('nav a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const id = e.target.id;
+        const active = document.querySelector(`nav a[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
