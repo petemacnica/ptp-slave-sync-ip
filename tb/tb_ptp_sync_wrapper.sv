@@ -17,7 +17,7 @@
 // ============================================================================
 
 `timescale 1ns / 1ps
-`default_nettype none
+//`default_nettype none
 
 module tb_ptp_sync_wrapper;
 
@@ -52,6 +52,12 @@ module tb_ptp_sync_wrapper;
     logic        grandmaster_changed;
     logic [63:0] current_gm_id;
     logic        amt_violation, forced_master_event;
+    
+    logic [79:0] t1_val = {48'd1000, 32'd500_000};
+    logic [79:0] t2_hw  = {48'd1000, 32'd500_100};
+    logic [79:0] t3_val = {48'd1000, 32'd600_000}; // T3
+    logic [79:0] t4_val = {48'd1000, 32'd600_120}; // T4
+    
     logic        cfg_slave_only, cfg_forced_master;
     logic [7:0]  cfg_domain_num;
     logic [AMT_DEPTH-1:0][63:0] cfg_amt_table;
@@ -340,10 +346,10 @@ module tb_ptp_sync_wrapper;
             repeat(5) @(posedge clk);
         end
 
-        // T1 = 1000 seconds + 500000 ns
-        logic [79:0] t1_val = {48'd1000, 32'd500_000};
-        // T2 = 1000 seconds + 500100 ns (100 ns later, propagation)
-        logic [79:0] t2_hw  = {48'd1000, 32'd500_100};
+        // T1 = 1000 seconds + 500000 ns;
+        //logic [79:0] t1_val = {48'd1000, 32'd500_000};
+        // T2 = 1000 seconds + 500100 ns (100 ns later, propagation);
+        //logic [79:0] t2_hw  = {48'd1000, 32'd500_100};
 
         build_sync_frame(frame_q, 16'h0001);
         send_frame(frame_q, t2_hw); // Injects T2 as HW timestamp
@@ -379,7 +385,7 @@ module tb_ptp_sync_wrapper;
         join_any
 
         // Simulate PHY HW TX timestamp (T3)
-        logic [79:0] t3_val = {48'd1000, 32'd600_000}; // T3
+        //logic [79:0] t3_val = {48'd1000, 32'd600_000}; // T3
         repeat(2) @(posedge clk);
         phy_tx_timestamp = t3_val;
         phy_tx_ts_valid  = 1'b1;
@@ -387,7 +393,7 @@ module tb_ptp_sync_wrapper;
         phy_tx_ts_valid  = 1'b0;
 
         // T4 = T3 + 120 ns (return path)
-        logic [79:0] t4_val = {48'd1000, 32'd600_120};
+        //logic [79:0] t4_val = {48'd1000, 32'd600_120};
 
         // Build and inject Delay_Resp frame manually into parser
         // (simplified: drive parser outputs directly via force/backdoor)
@@ -447,7 +453,7 @@ module tb_ptp_sync_wrapper;
 
 endmodule
 
-`default_nettype wire
+//`default_nettype wire
 // ============================================================================
 // End of tb_ptp_sync_wrapper.sv
 // ============================================================================

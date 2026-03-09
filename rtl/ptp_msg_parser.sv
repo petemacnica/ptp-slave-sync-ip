@@ -16,7 +16,7 @@
 // ============================================================================
 
 `timescale 1ns / 1ps
-`default_nettype none
+//`default_nettype none
 
 module ptp_msg_parser #(
     parameter int unsigned DATA_W       = 8,   // AXI-Stream byte-wide

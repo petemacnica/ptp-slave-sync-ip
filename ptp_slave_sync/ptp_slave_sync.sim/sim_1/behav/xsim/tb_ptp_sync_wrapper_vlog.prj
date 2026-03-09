@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../../../../../tools/Xilinx/2025.1/data/rsb/busdef" \
+"../../../../../rtl/ptp_delay_req_framer.sv" \
+"../../../../../rtl/ptp_msg_parser.sv" \
+"../../../../../rtl/ptp_slave_sync_top.sv" \
+"../../../../../rtl/ptp_sync_wrapper.sv" \
+"../../../../../tb/tb_ptp_sync_wrapper.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

@@ -1,4 +1,6 @@
 // ============================================================================
+// Macnica Americas
+// 
 // Module       : ptp_slave_sync_top
 // Project      : IEEE 1588 PTP Slave Clock Synchronization IP
 // Description  : Top-level PTP Boundary/Ordinary Clock Synchronization Logic
@@ -23,12 +25,12 @@
 // Target       : Mellanox Spectrum-compatible Boundary Clock endpoint
 //                (Slave/Ordinary Clock instantiation in AV encoder/decoder)
 //
-// Author       : RTL Design — ProAV PTP IP Core
-// Revision     : 1.0  (2024)
+// Author       : Peter Mbua (Plano, TX)
+// Revision     : 1.0  (2026)
 // ============================================================================
 
 `timescale 1ns / 1ps
-`default_nettype none
+//`default_nettype none
 
 module ptp_slave_sync_top #(
     // -------------------------------------------------------------------------
@@ -52,13 +54,13 @@ module ptp_slave_sync_top #(
     // -------------------------------------------------------------------------
     // Clocks & Resets
     // -------------------------------------------------------------------------
-    input  logic                clk,             // System clock (125 MHz)
-    input  logic                rst_n,           // Active-low async reset
+    input  wire               clk,             // System clock (125 MHz)
+    input  bit                rst_n,           // Active-low async reset
 
     // -------------------------------------------------------------------------
     // PTP Message RX Interface (from MAC/PHY layer parser)
     // -------------------------------------------------------------------------
-    input  logic                rx_ptp_valid,        // Strobed 1 cycle when PTP frame decoded
+    input  wire                 rx_ptp_valid,        // Strobed 1 cycle when PTP frame decoded
     input  logic [3:0]          rx_msg_type,         // PTP messageType field [3:0]
     input  logic [7:0]          rx_domain_num,       // domainNumber
     input  logic [63:0]         rx_src_port_id,      // sourcePortIdentity [79:16]
@@ -625,6 +627,8 @@ module ptp_slave_sync_top #(
     //     P-term: proportional to current offset
     //     I-term: accumulated integral to correct frequency error
     // =========================================================================
+    logic signed [SERVO_ACC_W-1:0] new_integrator;
+    
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             servo_integrator <= '0;
@@ -641,7 +645,7 @@ module ptp_slave_sync_top #(
                 servo_p_term <= $signed(offset_calc[31:0]) >>> KP_SHIFT;
 
                 // I term: accumulate and clip
-                logic signed [SERVO_ACC_W-1:0] new_integrator;
+                //logic signed [SERVO_ACC_W-1:0] new_integrator;
                 new_integrator = servo_integrator + $signed(offset_calc[31:0]);
                 // Anti-windup clamp: ±10ms in nanoseconds
                 if (new_integrator > $signed(SERVO_ACC_W'(10_000_000)))

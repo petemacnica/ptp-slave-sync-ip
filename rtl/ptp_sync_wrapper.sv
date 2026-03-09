@@ -1,4 +1,5 @@
 // ============================================================================
+// Macnica Americas
 // Module       : ptp_sync_wrapper
 // Description  : Integration wrapper for the complete IEEE 1588 PTP Slave
 //                Clock Synchronization IP. Connects:
@@ -16,7 +17,9 @@
 //   - Connect phy_rx_timestamp and phy_tx_timestamp from PHY timestamping
 //   - Drive cfg_ signals from a register file
 //   - Read local_time_sec/ns, pps_out, clock_locked, offset_from_master
-//
+// 
+// Author       : Peter Mbua (Plano, TX)
+// Revision     : 1.0  (2026)
 // ============================================================================
 
 `timescale 1ns / 1ps
@@ -30,25 +33,25 @@ module ptp_sync_wrapper #(
     parameter int unsigned PTP_DOMAIN   = 127
 ) (
     // System
-    input  logic                clk,
-    input  logic                rst_n,
+    input  wire                clk,
+    input  wire                rst_n,
 
     // MAC RX (AXI4-Stream)
-    input  logic [7:0]          rx_tdata,
-    input  logic                rx_tvalid,
-    input  logic                rx_tlast,
-    input  logic                rx_tuser,      // SFD pulse → HW RX timestamp
+    input  wire [7:0]          rx_tdata,
+    input  wire logic          rx_tvalid,
+    input  wire                rx_tlast,
+    input  wire                rx_tuser,      // SFD pulse → HW RX timestamp
 
     // PHY Hardware Timestamps
-    input  logic [79:0]         phy_rx_timestamp,
-    input  logic [79:0]         phy_tx_timestamp,
-    input  logic                phy_tx_ts_valid,
+    input  wire [79:0]         phy_rx_timestamp,
+    input  wire [79:0]         phy_tx_timestamp,
+    input  wire                phy_tx_ts_valid,
 
     // MAC TX (AXI4-Stream)
     output logic [7:0]          tx_tdata,
     output logic                tx_tvalid,
     output logic                tx_tlast,
-    input  logic                tx_tready,
+    input  wire                 tx_tready,
 
     // Recovered Clock Outputs
     output logic [47:0]         local_time_sec,
@@ -70,11 +73,11 @@ module ptp_sync_wrapper #(
     output logic                forced_master_event,
 
     // Configuration (from register file)
-    input  logic                cfg_slave_only,
-    input  logic                cfg_forced_master,
-    input  logic [7:0]          cfg_domain_num,
-    input  logic [AMT_DEPTH-1:0][63:0] cfg_amt_table,
-    input  logic [AMT_DEPTH-1:0]       cfg_amt_valid
+    input  wire                cfg_slave_only,
+    input  wire                cfg_forced_master,
+    input  wire [7:0]          cfg_domain_num,
+    input  reg  [AMT_DEPTH-1:0][63:0] cfg_amt_table,
+    input  wire [AMT_DEPTH-1:0]       cfg_amt_valid
 );
 
     // =========================================================================

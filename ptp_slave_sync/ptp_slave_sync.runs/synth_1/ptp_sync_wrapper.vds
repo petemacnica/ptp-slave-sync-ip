@@ -1,0 +1,607 @@
+#-----------------------------------------------------------
+# Vivado v2025.1 (64-bit)
+# SW Build 6140274 on Wed May 21 22:58:25 MDT 2025
+# IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
+# SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
+# Start of session at: Mon Mar  9 11:25:02 2026
+# Process ID         : 223321
+# Current directory  : /home/dallas0/github/ptp-slave-sync-ip/ptp_slave_sync/ptp_slave_sync.runs/synth_1
+# Command line       : vivado -log ptp_sync_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source ptp_sync_wrapper.tcl
+# Log file           : /home/dallas0/github/ptp-slave-sync-ip/ptp_slave_sync/ptp_slave_sync.runs/synth_1/ptp_sync_wrapper.vds
+# Journal file       : /home/dallas0/github/ptp-slave-sync-ip/ptp_slave_sync/ptp_slave_sync.runs/synth_1/vivado.jou
+# Running On         : dallas0-SYS-5018R-M
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 22.04.5 LTS
+# Processor Detail   : Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz
+# CPU Frequency      : 1200.000 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 67308 MB
+# Swap memory        : 34359 MB
+# Total Virtual      : 101668 MB
+# Available Virtual  : 90917 MB
+#-----------------------------------------------------------
+source ptp_sync_wrapper.tcl -notrace
+Command: synth_design -top ptp_sync_wrapper -part xczu7ev-ffvc1156-2-e
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu7ev'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu7ev'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 7 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 223352
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1969.137 ; gain = 427.750 ; free physical = 43592 ; free virtual = 85643
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'ptp_sync_wrapper' [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_sync_wrapper.sv:28]
+INFO: [Synth 8-6157] synthesizing module 'ptp_msg_parser' [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:21]
+	Parameter DATA_W bound to: 32'b00000000000000000000000000001000 
+	Parameter TIMESTAMP_W bound to: 32'b00000000000000000000000001010000 
+INFO: [Synth 8-6155] done synthesizing module 'ptp_msg_parser' (0#1) [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:21]
+INFO: [Synth 8-6157] synthesizing module 'ptp_slave_sync_top' [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:35]
+	Parameter CLK_FREQ_HZ bound to: 32'b00000111011100110101100101000000 
+	Parameter PTP_DOMAIN_NUM bound to: 32'b00000000000000000000000001111111 
+	Parameter CLOCK_ID bound to: 64'b1101111010101101101111101110111111001010111111100000000000000001 
+	Parameter AMT_DEPTH bound to: 32'b00000000000000000000000000001000 
+INFO: [Synth 8-6155] done synthesizing module 'ptp_slave_sync_top' (0#1) [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:35]
+INFO: [Synth 8-6157] synthesizing module 'ptp_delay_req_framer' [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:18]
+	Parameter SRC_MAC bound to: 48'b110111101010110110111110111011110000000000000001 
+	Parameter CLOCK_ID bound to: 64'b1101111010101101101111101110111111001010111111100000000000000001 
+INFO: [Synth 8-6155] done synthesizing module 'ptp_delay_req_framer' (0#1) [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:18]
+INFO: [Synth 8-6155] done synthesizing module 'ptp_sync_wrapper' (0#1) [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_sync_wrapper.sv:28]
+WARNING: [Synth 8-6014] Unused sequential element is_ptp_over_eth_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:138]
+WARNING: [Synth 8-6014] Unused sequential element is_ptp_over_udp_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:139]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[1] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[2] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[3] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[5] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[6] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[7] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[16] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[17] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[18] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[19] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[30] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[31] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[32] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[33] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[8] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[9] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[10] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[11] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[12] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[13] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[14] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[20] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[21] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[22] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[23] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[24] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[25] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[26] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[28] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[34] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[35] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[36] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element ptp_hdr_buf_reg[40] was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[0] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[4] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[15] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[27] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[29] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[37] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[38] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[39] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[41] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[42] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-7137] Register ptp_hdr_buf_reg[43] in module ptp_msg_parser has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv:227]
+WARNING: [Synth 8-6014] Unused sequential element hw_ns_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:257]
+WARNING: [Synth 8-6014] Unused sequential element hw_sec_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:258]
+WARNING: [Synth 8-6014] Unused sequential element adjusted_ns_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:292]
+WARNING: [Synth 8-6014] Unused sequential element bmca_steps_removed_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:339]
+WARNING: [Synth 8-6014] Unused sequential element better_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:372]
+WARNING: [Synth 8-6014] Unused sequential element t2_minus_t1_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:596]
+WARNING: [Synth 8-6014] Unused sequential element t4_minus_t3_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:597]
+WARNING: [Synth 8-6014] Unused sequential element new_integrator_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv:649]
+WARNING: [Synth 8-6014] Unused sequential element frame_ready_reg was removed.  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:163]
+WARNING: [Synth 8-7137] Register frame_buf_reg[0] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[1] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[2] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[3] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[4] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[5] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[6] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[7] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[8] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[9] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[10] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[11] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[12] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[13] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[14] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[15] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[16] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[17] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[18] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[19] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[20] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[21] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[22] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[23] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[24] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[25] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[26] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[27] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[28] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[29] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[30] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[31] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[32] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[33] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[34] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[35] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[36] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[37] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[38] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[39] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[40] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[41] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[42] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[43] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[44] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[45] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[46] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[47] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[48] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[49] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[50] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[51] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[52] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[53] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[54] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[55] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[56] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7137] Register frame_buf_reg[57] in module ptp_delay_req_framer has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv:87]
+WARNING: [Synth 8-7129] Port rx_src_port_id[63] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[62] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[61] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[60] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[59] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[58] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[57] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[56] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[55] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[54] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[53] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[52] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[51] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[50] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[49] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[48] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[47] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[46] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[45] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[44] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[43] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[42] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[41] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[40] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[39] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[38] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[37] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[36] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[35] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[34] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[33] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[32] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[31] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[30] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[29] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[28] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[27] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[26] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[25] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[24] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[23] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[22] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[21] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[20] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[19] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[18] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[17] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[16] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[15] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[14] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[13] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[12] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[11] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[10] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[9] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[8] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[7] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[6] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[5] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[4] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[3] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[2] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[1] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_src_port_id[0] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[63] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[62] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[61] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[60] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[59] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[58] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[57] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[56] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[55] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[54] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[53] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[52] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[51] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[50] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[49] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[48] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[47] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[46] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[45] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[44] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[43] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[42] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[41] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[40] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[39] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[38] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[37] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[36] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[35] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[34] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[33] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[32] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[31] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[30] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[29] in module ptp_slave_sync_top is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rx_correction_field[28] in module ptp_slave_sync_top is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 2057.074 ; gain = 515.688 ; free physical = 43483 ; free virtual = 85536
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2074.887 ; gain = 533.500 ; free physical = 43496 ; free virtual = 85549
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xczu7ev-ffvc1156-2-e
+INFO: [Device 21-403] Loading part xczu7ev-ffvc1156-2-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2083.793 ; gain = 542.406 ; free physical = 43496 ; free virtual = 85549
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'ptp_msg_parser'
+INFO: [Synth 8-802] inferred FSM for state register 'port_state_reg' in module 'ptp_slave_sync_top'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'ptp_delay_req_framer'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  S_IDLE |                              000 |                             0000
+               S_ETH_HDR |                              001 |                             0001
+              S_IPV4_HDR |                              010 |                             0100
+               S_UDP_HDR |                              011 |                             0101
+               S_PTP_HDR |                              100 |                             0010
+                  S_DROP |                              101 |                             0110
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'ptp_msg_parser'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              STATE_INIT |                           000001 |                              000
+         STATE_LISTENING |                           000100 |                              001
+           STATE_UNCALIB |                           100000 |                              010
+             STATE_SLAVE |                           010000 |                              011
+            STATE_MASTER |                           000010 |                              101
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'port_state_reg' using encoding 'one-hot' in module 'ptp_slave_sync_top'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  S_IDLE |                              001 |                               00
+                  S_SEND |                              010 |                               01
+               S_WAIT_TS |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'ptp_delay_req_framer'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:10 . Memory (MB): peak = 2083.793 ; gain = 542.406 ; free physical = 43510 ; free virtual = 85564
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   5 Input   64 Bit       Adders := 1     
+	   6 Input   64 Bit       Adders := 1     
+	   9 Input   64 Bit       Adders := 1     
+	   2 Input   48 Bit       Adders := 1     
+	   2 Input   33 Bit       Adders := 1     
+	   2 Input   32 Bit       Adders := 4     
+	   3 Input   32 Bit       Adders := 1     
+	   2 Input   30 Bit       Adders := 1     
+	   2 Input   16 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 1     
+	   2 Input    7 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 1     
++---Registers : 
+	               80 Bit    Registers := 21    
+	               64 Bit    Registers := 8     
+	               48 Bit    Registers := 1     
+	               32 Bit    Registers := 5     
+	               16 Bit    Registers := 8     
+	                8 Bit    Registers := 40    
+	                7 Bit    Registers := 1     
+	                4 Bit    Registers := 1     
+	                1 Bit    Registers := 18    
++---Multipliers : 
+	              31x33  Multipliers := 4     
++---Muxes : 
+	   2 Input   48 Bit        Muxes := 3     
+	   3 Input   48 Bit        Muxes := 1     
+	   2 Input   32 Bit        Muxes := 6     
+	   2 Input   30 Bit        Muxes := 1     
+	   2 Input   16 Bit        Muxes := 1     
+	   6 Input   16 Bit        Muxes := 1     
+	   6 Input    8 Bit        Muxes := 2     
+	   3 Input    7 Bit        Muxes := 1     
+	   5 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 3     
+	   6 Input    3 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 3     
+	   3 Input    3 Bit        Muxes := 1     
+	   5 Input    3 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 24    
+	   5 Input    1 Bit        Muxes := 5     
+	   6 Input    1 Bit        Muxes := 20    
+	   3 Input    1 Bit        Muxes := 9     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 1728 (col length:144)
+BRAMs: 624 (col length: RAMB18 144 RAMB36 72)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (A:0xca00)*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: A*(B:0xca00).
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (A:0xca00)*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: A*(B:0xca00).
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (A:0xca00)*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: A*(B:0xca00).
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (A:0xca00)*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: A*(B:0xca00).
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: Generating DSP ts_to_ns_return0, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+DSP Report: operator ts_to_ns_return0 is absorbed into DSP ts_to_ns_return0.
+WARNING: [Synth 8-3332] Sequential element (FSM_onehot_port_state_reg[3]) is unused and will be removed from module ptp_slave_sync_top.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:00:26 . Memory (MB): peak = 3012.629 ; gain = 1471.242 ; free physical = 42590 ; free virtual = 84669
+---------------------------------------------------------------------------------
+ Sort Area is  ts_to_ns_return0_0 : 0 0 : 830 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_0 : 0 1 : 1999 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_6 : 0 0 : 830 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_6 : 0 1 : 1999 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_8 : 0 0 : 830 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_8 : 0 1 : 1999 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_a : 0 0 : 830 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_a : 0 1 : 1999 2829 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_3 : 0 0 : 520 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_3 : 0 1 : 1804 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_7 : 0 0 : 520 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_7 : 0 1 : 1804 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_9 : 0 0 : 520 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_9 : 0 1 : 1804 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_b : 0 0 : 520 2324 : Used 1 time 0
+ Sort Area is  ts_to_ns_return0_b : 0 1 : 1804 2324 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++-------------------+----------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name        | DSP Mapping    | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-------------------+----------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|ptp_slave_sync_top | (A:0xca00)*B   | 16     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 16     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | A*(B:0xca00)   | 18     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 18     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (A:0xca00)*B   | 16     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 16     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | A*(B:0xca00)   | 18     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 18     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (A:0xca00)*B   | 16     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 16     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | A*(B:0xca00)   | 18     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 18     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (A:0xca00)*B   | 16     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 16     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | A*(B:0xca00)   | 18     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ptp_slave_sync_top | (PCIN>>17)+A*B | 18     | 14     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++-------------------+----------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:00:26 . Memory (MB): peak = 3012.629 ; gain = 1471.242 ; free physical = 42590 ; free virtual = 84669
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:26 ; elapsed = 00:00:26 . Memory (MB): peak = 3012.629 ; gain = 1471.242 ; free physical = 42590 ; free virtual = 84669
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     1|
+|2     |CARRY8 |    55|
+|3     |LUT1   |    80|
+|4     |LUT2   |    15|
+|5     |LUT3   |   164|
+|6     |LUT4   |   100|
+|7     |LUT5   |    51|
+|8     |LUT6   |   192|
+|9     |MUXF7  |     2|
+|10    |FDCE   |   291|
+|11    |FDPE   |    42|
+|12    |FDRE   |   143|
+|13    |IBUF   |   544|
+|14    |OBUF   |   228|
++------+-------+------+
+
+Report Instance Areas: 
++------+-----------+---------------------+------+
+|      |Instance   |Module               |Cells |
++------+-----------+---------------------+------+
+|1     |top        |                     |  1908|
+|2     |  u_framer |ptp_delay_req_framer |   176|
+|3     |  u_parser |ptp_msg_parser       |   322|
+|4     |  u_sync   |ptp_slave_sync_top   |   637|
++------+-----------+---------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 579 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.441 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+Synthesis Optimization Complete : Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 3051.449 ; gain = 1510.055 ; free physical = 42574 ; free virtual = 84653
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.02 . Memory (MB): peak = 3077.277 ; gain = 0.000 ; free physical = 42723 ; free virtual = 84802
+INFO: [Netlist 29-17] Analyzing 602 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3196.828 ; gain = 0.000 ; free physical = 42661 ; free virtual = 84737
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 545 instances were transformed.
+  BUFG => BUFGCE: 1 instance 
+  IBUF => IBUF (IBUFCTRL, INBUF): 544 instances
+
+Synth Design complete | Checksum: 7837f5b1
+INFO: [Common 17-83] Releasing license: Synthesis
+28 Infos, 215 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:40 ; elapsed = 00:00:37 . Memory (MB): peak = 3196.863 ; gain = 1655.477 ; free physical = 42669 ; free virtual = 84745
+INFO: [Common 17-2834] synth_design peak Physical Memory [PSS] (MB): overall = 2466.418; main = 2377.696; forked = 275.334
+INFO: [Common 17-2834] synth_design peak Virtual Memory [VSS] (MB): overall = 3975.246; main = 3196.832; forked = 962.613
+Write ShapeDB Complete: Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3220.840 ; gain = 0.000 ; free physical = 42668 ; free virtual = 84745
+INFO: [Common 17-1381] The checkpoint '/home/dallas0/github/ptp-slave-sync-ip/ptp_slave_sync/ptp_slave_sync.runs/synth_1/ptp_sync_wrapper.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file ptp_sync_wrapper_utilization_synth.rpt -pb ptp_sync_wrapper_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Mon Mar  9 11:25:45 2026...

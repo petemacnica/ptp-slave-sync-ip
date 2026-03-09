@@ -1,0 +1,10 @@
+0.7
+2020.2
+May 21 2025
+22:59:56
+/home/dallas0/github/ptp-slave-sync-ip/ptp_slave_sync/ptp_slave_sync.sim/sim_1/behav/xsim/glbl.v,1741209010,verilog,,,,glbl,,uvm,,,,,,
+/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_delay_req_framer.sv,1773069844,systemVerilog,,/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv,,ptp_delay_req_framer,,uvm,../../../../../../../../../tools/Xilinx/2025.1/data/rsb/busdef,,,,,
+/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_msg_parser.sv,1773069827,systemVerilog,,/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv,,ptp_msg_parser,,uvm,../../../../../../../../../tools/Xilinx/2025.1/data/rsb/busdef,,,,,
+/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_slave_sync_top.sv,1773070933,systemVerilog,,/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_sync_wrapper.sv,,ptp_slave_sync_top,,uvm,../../../../../../../../../tools/Xilinx/2025.1/data/rsb/busdef,,,,,
+/home/dallas0/github/ptp-slave-sync-ip/rtl/ptp_sync_wrapper.sv,1773071901,systemVerilog,,/home/dallas0/github/ptp-slave-sync-ip/tb/tb_ptp_sync_wrapper.sv,,ptp_sync_wrapper,,uvm,../../../../../../../../../tools/Xilinx/2025.1/data/rsb/busdef,,,,,
+/home/dallas0/github/ptp-slave-sync-ip/tb/tb_ptp_sync_wrapper.sv,1773073349,systemVerilog,,,,tb_ptp_sync_wrapper,,uvm,../../../../../../../../../tools/Xilinx/2025.1/data/rsb/busdef,,,,,

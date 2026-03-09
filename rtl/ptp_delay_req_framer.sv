@@ -13,7 +13,7 @@
 // ============================================================================
 
 `timescale 1ns / 1ps
-`default_nettype none
+//`default_nettype none
 
 module ptp_delay_req_framer #(
     parameter logic [47:0] SRC_MAC     = 48'hDE_AD_BE_EF_00_01,
