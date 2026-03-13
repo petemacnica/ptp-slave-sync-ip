@@ -49,7 +49,9 @@ module ptp_slave_sync_top #(
     parameter logic [63:0] CLOCK_ID         = 64'hDEAD_BEEF_CAFE_0001, // 64-bit ClockIdentity (EUI-64)
     parameter int unsigned AMT_DEPTH        = 8,           // Acceptable Master Table entries
     parameter int unsigned MPD_THR_NS       = 1_000_000,   // Mean path delay threshold (1 ms)
-    parameter int unsigned OFM_THR_NS       = 100_000      // Offset-from-master threshold (100 µs)
+    parameter int unsigned OFM_THR_NS       = 100_000,      // Offset-from-master threshold (100 µs)
+    
+    parameter int unsigned SIM_SPEEDUP      = 1  // set to 1000 in TB instantiation
 ) (
     // -------------------------------------------------------------------------
     // Clocks & Resets
@@ -136,8 +138,8 @@ module ptp_slave_sync_top #(
     // =========================================================================
     localparam int unsigned NS_PER_SEC      = 1_000_000_000;
     localparam int unsigned NS_INC          = NS_PER_SEC / CLK_FREQ_HZ; // 8 ns @ 125 MHz
-    localparam int unsigned SYNC_INTERVAL   = CLK_FREQ_HZ / 8;  // 125ms @ 8Hz (logSyncInt=-3)
-    localparam int unsigned ANNOUNCE_INTV   = CLK_FREQ_HZ / 4;  // 250ms @ 4Hz (logAnnInt=-2)
+    localparam int unsigned SYNC_INTERVAL   = CLK_FREQ_HZ / (8 * SIM_SPEEDUP);  // 125ms @ 8Hz (logSyncInt=-3)
+    localparam int unsigned ANNOUNCE_INTV   = CLK_FREQ_HZ / (4 * SIM_SPEEDUP);  // 250ms @ 4Hz (logAnnInt=-2)
     localparam int unsigned ANNOUNCE_TO_CNT = ANNOUNCE_TIMEOUT * ANNOUNCE_INTV;
     localparam int unsigned DELAYREQ_INTV   = SYNC_INTERVAL;     // logSyncInt
 
