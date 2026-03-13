@@ -23,7 +23,7 @@
 // ============================================================================
 
 `timescale 1ns / 1ps
-`default_nettype none
+//`default_nettype none
 
 module ptp_sync_wrapper #(
     parameter int unsigned CLK_FREQ_HZ  = 125_000_000,
@@ -76,7 +76,7 @@ module ptp_sync_wrapper #(
     input  wire                cfg_slave_only,
     input  wire                cfg_forced_master,
     input  wire [7:0]          cfg_domain_num,
-    input  reg  [AMT_DEPTH-1:0][63:0] cfg_amt_table,
+    input  logic  [AMT_DEPTH-1:0][63:0] cfg_amt_table,
     input  wire [AMT_DEPTH-1:0]       cfg_amt_valid
 );
 

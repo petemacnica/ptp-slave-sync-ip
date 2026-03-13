@@ -1,4 +1,5 @@
 // ============================================================================
+// Macnica Americas, Dallas TX.
 // Module       : ptp_msg_parser
 // Description  : Parses incoming Ethernet II frames for PTP messages.
 //                Extracts all relevant fields and generates hardware RX
@@ -13,6 +14,7 @@
 //
 // Input        : Raw AXI4-Stream byte stream from MAC RX path
 // Output       : Decoded PTP message fields + HW timestamp
+// Author       : Peter Mbua
 // ============================================================================
 
 `timescale 1ns / 1ps
