@@ -67,7 +67,7 @@ module tb_ptp_sync_wrapper;
     // DUT instantiation
     // =========================================================================
     ptp_sync_wrapper #(
-        .CLK_FREQ_HZ (CLK_FREQ_HZ),
+        .CLK_FREQ_HZ (125_000_000),  // Real clock: CLK_FREQ_HZ
         .SRC_MAC     (SRC_MAC),
         .CLOCK_ID    (CLOCK_ID),
         .AMT_DEPTH   (AMT_DEPTH),
@@ -116,7 +116,15 @@ module tb_ptp_sync_wrapper;
         rx_tlast  <= 1'b0;
         rx_tdata  <= 8'h00;
     endtask
-
+    
+    // Debug
+    /*   @(posedge clk);
+        $display("DEBUG: parser_announce_valid=%b, parser_domain=%0d, parser_ann_gm_id=%h",
+            dut.parser_announce_valid,
+            dut.parser_domain_num,
+            dut.parser_ann_gm_id);
+    */
+    
     // =========================================================================
     // Task: build minimal Announce frame (Ethernet_II + PTP header simplified)
     // =========================================================================
@@ -249,6 +257,7 @@ module tb_ptp_sync_wrapper;
     logic [7:0] frame_q [];
 
     initial begin
+        
         // ----------------------------------------------------------------
         // 0. Initialize
         // ----------------------------------------------------------------
@@ -266,7 +275,14 @@ module tb_ptp_sync_wrapper;
         cfg_domain_num   = 8'd127;
         cfg_amt_valid    = '0;
         cfg_amt_table    = '0;
-
+        
+        // =========================================================================
+        // Waveform dump
+        // =========================================================================
+        $dumpfile("ptp_sync_tb.vcd");
+        $dumpvars(0, tb_ptp_sync_wrapper);
+        
+        // Reset
         repeat(10) @(posedge clk);
         rst_n = 1'b1;
         repeat(5) @(posedge clk);
@@ -287,6 +303,12 @@ module tb_ptp_sync_wrapper;
 
         build_announce_frame(frame_q, GM_ID, 8'd128, 8'd135, 8'h20, 16'hFFFF, 8'd128, 8'd127);
         send_frame(frame_q, 80'h0);
+        
+        @(posedge clk);
+        $display("DEBUG: parser_announce_valid=%b, parser_domain=%0d, parser_ann_gm_id=%h",
+            dut.parser_announce_valid,
+            dut.parser_domain_num,
+            dut.parser_ann_gm_id);
 
         repeat(10) @(posedge clk);
 
@@ -432,14 +454,6 @@ module tb_ptp_sync_wrapper;
             $display("*** %0d TEST(S) FAILED ***", test_errors);
 
         $finish;
-    end
-
-    // =========================================================================
-    // Waveform dump
-    // =========================================================================
-    initial begin
-        $dumpfile("ptp_sync_tb.vcd");
-        $dumpvars(0, tb_ptp_sync_wrapper);
     end
 
     // =========================================================================
