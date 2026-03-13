@@ -6,6 +6,10 @@ This document describes the internal microarchitecture of the IEEE 1588 PTP Slav
 Synchronization IP. It supplements the top-level README with design-level detail
 intended for RTL engineers integrating or modifying the core.
 
+Macnica Americas, Inc.
+Peter Mbua 
+Dallas (Plano), TX.
+
 ---
 
 ## Clock Architecture
