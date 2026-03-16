@@ -10,6 +10,7 @@
 //
 // Transport    : Ethernet_II (0x88F7), multicast PTP dest 01:1B:19:00:00:00
 // Tx trigger   : tx_delay_req_valid strobe from ptp_slave_sync_top
+// Author       : Peter Mbua
 // ============================================================================
 
 `timescale 1ns / 1ps
